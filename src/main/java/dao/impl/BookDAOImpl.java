@@ -68,8 +68,26 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public Book save(Book book) throws SQLException {
-        String query = "INSERT INTO books (title, author_id, publication_year, genre, pages) values() ";
+    public Book save(Book book) {
+        String query = "INSERT INTO books (title, author_id, publication_year, genre, pages) values(?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = DatabaseConnection.getConnection().prepareStatement(query);
+            preparedStatement.setString(1, book.getTitle() );
+            preparedStatement.setInt(2, book.getAuthorId());
+            preparedStatement.setInt(3, book.getPublicationYear());
+            preparedStatement.setString(4, book.getGenre());
+            preparedStatement.setInt(5, book.getPages());
+            int result = preparedStatement.executeUpdate();
+            if (result>0) {
+                return book;
+            } else {
+                System.out.println("Do not saved");
+            };
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+       return null;
     }
 
     @Override
