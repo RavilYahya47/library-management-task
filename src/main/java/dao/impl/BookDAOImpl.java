@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class BookDAOImpl implements BookDAO {
     @Override
-    public List<Book> findAll() throws SQLException {
+    public List<Book> findAll() {
         List<Book> books = new ArrayList<Book>();
         String query = "SELECT * FROM books";
         try (PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(query)) {
@@ -43,13 +43,28 @@ public class BookDAOImpl implements BookDAO {
         String query = "SELECT * FROM books WHERE id=?";
         try (PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(query)){
             preparedStatement.setInt(1,id);
-            int i = preparedStatement.executeUpdate();
-            if(i>0) {
-                return Optional.of(Book);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int ID = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                int authorId = resultSet.getInt("author_id");
+                int publicationYear = resultSet.getInt("publication_year");
+                String genre = resultSet.getString("genre");
+                int pages = resultSet.getInt("pages");
+                Boolean isAvailable = resultSet.getBoolean("is_available");
+                Timestamp ts = resultSet.getTimestamp("created_at");
+                LocalDateTime time = ts.toLocalDateTime();
+
+                Book book = new Book(ID, title, authorId, publicationYear, genre, pages, isAvailable, time );
+                return  Optional.of(book);
             }
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        return Optional.empty();
     }
 
     @Override
