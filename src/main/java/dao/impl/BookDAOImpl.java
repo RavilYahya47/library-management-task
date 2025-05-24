@@ -91,8 +91,24 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public void update(Book book) throws SQLException {
+    public void update(Book book) {
+        String query = "UPDATE books SET title=?, author_id=?, publication_year=?, genre=?, pages=?) FROM books WHERE id=?";
+        try (PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(query)) {
+            preparedStatement.setString(1, book.getTitle());
+            preparedStatement.setInt(2, book.getAuthorId());
+            preparedStatement.setInt(3, book.getPublicationYear());
+            preparedStatement.setString(4, book.getGenre());
+            preparedStatement.setInt(5, book.getPages());
+            preparedStatement.setInt(6, book.getId());
 
+            int result = preparedStatement.executeUpdate();
+            if(result>0) {
+                System.out.println("Update query is successfully");
+            }
+            else System.out.println("Don't update....");
+        }catch (SQLException e) {
+            System.out.println("There is a connections problem : " +e.getMessage());
+        }
     }
 
     @Override
