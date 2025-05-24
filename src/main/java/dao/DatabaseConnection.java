@@ -8,6 +8,7 @@ public class DatabaseConnection {
     private static final String URL = "jdbc:postgresql://localhost:5432/orient";
     private static final String USERNAME = "postgres";
     private static final String PASSWORD = "postgres";
+    private static Connection connection;
 
     static {
         try {
@@ -18,6 +19,10 @@ public class DatabaseConnection {
     }
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        if (connection == null) {
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        }
+
+        return connection;
     }
 }
