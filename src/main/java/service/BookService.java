@@ -5,6 +5,7 @@ import main.java.model.Book;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class BookService {
     private static BookService service;
@@ -22,23 +23,11 @@ public class BookService {
         this.dao = dao;
     }
 
-    public List<Book> getBooks() {
-        return new ArrayList<Book>();
-    }
+    public void filterBy(Predicate<Book> filter) {
 
-    public List<Book> getBooksByYear(int year) {
-        return new ArrayList<Book>();
-    }
+    };
 
-    public List<Book> getBooksByAuthorName(String authorName) {
-        return new ArrayList<Book>();
-    }
+    public void hireBook() {}
 
-    public List<Book> getBooksByTitle(String title) {
-        return new ArrayList<Book>();
-    }
-
-    public List<Book> getBooksByGenre(String genre) {
-        return new ArrayList<Book>();
-    }
+    public void returnBook() {}
 }

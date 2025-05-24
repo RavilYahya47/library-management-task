@@ -12,5 +12,82 @@ public class Book {
     private boolean isAvailable;
     private LocalDateTime createdAt;
 
-    // Constructors, getters, setters, toString, equals, hashCode
+    public Book(int id, String title, int authorId, Integer publicationYear, String genre, Integer pages, boolean isAvailable) {
+        this.id = id;
+        this.title = title;
+        this.authorId = authorId;
+        this.publicationYear = publicationYear;
+        this.genre = genre;
+        this.pages = pages;
+        this.isAvailable = isAvailable;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(int authorId) {
+        this.authorId = authorId;
+    }
+
+    public Integer getPublicationYear() {
+        return publicationYear;
+    }
+
+    public void setPublicationYear(Integer publicationYear) {
+        this.publicationYear = publicationYear;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public Integer getPages() {
+        return pages;
+    }
+
+    public void setPages(Integer pages) {
+        this.pages = pages;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    @Override
+    public String toString() {
+        return "{id: " + id + ", title: " + title + ", authorId: " + authorId + ", publicationYear: " + publicationYear + ", genre: " + genre + " , pages: " + pages + ", isAvailable: " + isAvailable + ", createdAt: " + createdAt + "}";
+    }
 }

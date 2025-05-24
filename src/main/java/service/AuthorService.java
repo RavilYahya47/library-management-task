@@ -3,8 +3,9 @@ package main.java.service;
 import main.java.dao.AuthorDAO;
 import main.java.model.Author;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class AuthorService {
     private static AuthorService service;
@@ -22,15 +23,17 @@ public class AuthorService {
         this.dao = dao;
     }
 
-    public List<Author> getAuthors() {
-        return new ArrayList<Author>();
-    }
+    public void filterBy(Predicate<Author> filter) throws SQLException {
+        List<Author> authors = dao.findAll().stream().filter(filter).toList();
 
-    public List<Author> getAuthorsByName(String name) {
-        return new ArrayList<Author>();
-    }
+        if (!authors.isEmpty()) {
+            authors.forEach(System.out::println);
+        }
+        else {
+            System.out.println("No authors found");
+        }
+    };
 
-    public List<Author> getAuthorsByNationality(String nationality) {
-        return new ArrayList<Author>();
+    public void getAuthors() {
     }
 }
