@@ -13,7 +13,7 @@ public class AuthorDAOImpl implements AuthorDAO {
     @Override
     public List<Author> findAll() {
         List<Author> authors = new ArrayList<>();
-        String query = "SELECT * FROM author";
+        String query = "SELECT * FROM authors";
         PreparedStatement preparedStatement = null;
         try {
             preparedStatement = DatabaseConnection.getConnection().prepareStatement(query);
@@ -34,12 +34,12 @@ public class AuthorDAOImpl implements AuthorDAO {
     }
 
     @Override
-    public Optional<Author> findById(int id) throws SQLException {
-        String query = "SELECT * FROM author WHERE id = ?";
+    public Optional<Author> findById(int id) {
+        String query = "SELECT * FROM authors WHERE id = ?";
         try (PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(query)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-            Optional<Author> optionalAuthor = null;
+            Optional<Author> optionalAuthor = Optional.empty();
             while (resultSet.next()) {
                 int ID = resultSet.getInt(1);
                 String name = resultSet.getString(2);
@@ -51,27 +51,24 @@ public class AuthorDAOImpl implements AuthorDAO {
             return optionalAuthor;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            return null;
+            return Optional.empty();
         }
     }
 
     @Override
     public Author save(Author author) throws SQLException {
-        String query = "INSERT INTO authors (ID,name, birth_year, nationality) VALUES (?, ?, ?)";
+        String query = "INSERT INTO authors (ID,name, birth_year, nationality) VALUES (?, ?, ?,?)";
         try (PreparedStatement preperedStatement = DatabaseConnection.getConnection().prepareStatement(query) ){
             preperedStatement.setInt(1, author.getId());
             preperedStatement.setString(2, author.getName());
             preperedStatement.setInt(3, author.getBirthYear());
             preperedStatement.setString(4, author.getNationality());
-            ResultSet result = preperedStatement.executeQuery();
-            Author savedAuthor;
-            while (result.next()) {
-                int ID = result.getInt(1);
-                String name = result.getString(2);
-                int birth_year = result.getInt(3);
-                String nationality = result.getString(4);
-                savedAuthor = new Author(ID, name, birth_year, nationality);
-                return savedAuthor;
+
+            int rowAffected = preperedStatement.executeUpdate();
+            if (rowAffected>0) {
+                return author;
+            } else {
+                System.out.println("Author is not added");
             }
         } catch (SQLException e) {
             System.out.println("There is problem:  " + e.getMessage());
@@ -81,9 +78,13 @@ public class AuthorDAOImpl implements AuthorDAO {
     }
 
     @Override
-    public void update(Author author) throws SQLException {
-        String query = "UPDATE autors SET id = ?, name = ?, birth_year=?, nationality=?";
+    public void update(Author author) {
+        String query = "UPDATE authors SET  name = ?, birth_year=?, nationality=? WHERE id=?";
         try (PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(query)) {
+            preparedStatement.setString(1, author.getName());
+            preparedStatement.setInt(2, author.getBirthYear());
+            preparedStatement.setString(3, author.getNationality());
+            preparedStatement.setInt(4, author.getId());
             int i = preparedStatement.executeUpdate();
             if (i>0) {
                 System.out.println("Update query is successfully");
@@ -94,10 +95,10 @@ public class AuthorDAOImpl implements AuthorDAO {
     }
 
     @Override
-    public void deleteById(int id) throws SQLException {
+    public void deleteById(int id) {
         String query = "DELETE FROM authors WHERE ID=?";
-        try {
-            PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(query);
+        try (
+            PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(query);) {
             preparedStatement.setInt(1, id);
             int rowAffected = preparedStatement.executeUpdate();
             if(rowAffected>0) {

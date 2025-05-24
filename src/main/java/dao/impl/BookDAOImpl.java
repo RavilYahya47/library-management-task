@@ -39,16 +39,22 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public Optional<Book> findById(int id) throws SQLException {
-        String query = "SELECT id=? FROM books";
-
-
-        return Optional.empty();
+    public Optional<Book> findById(int id) {
+        String query = "SELECT * FROM books WHERE id=?";
+        try (PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(query)){
+            preparedStatement.setInt(1,id);
+            int i = preparedStatement.executeUpdate();
+            if(i>0) {
+                return Optional.of(Book);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public Book save(Book book) throws SQLException {
-        return null;
+        String query = "INSERT INTO books (title, author_id, publication_year, genre, pages) values() ";
     }
 
     @Override
