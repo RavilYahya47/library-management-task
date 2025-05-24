@@ -67,7 +67,15 @@ public class AuthorDAOImpl implements AuthorDAO {
 
     @Override
     public void update(Author author) throws SQLException {
-
+        String query = "UPDATE autors SET id = ?, name = ?, birth_year=?, nationality=?";
+        try (PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(query)) {
+            int i = preparedStatement.executeUpdate();
+            if (i>0) {
+                System.out.println("Update query is successfully");
+            }else System.out.println("Do not update");
+        } catch (SQLException e) {
+            System.out.println("There is a connection problem : " + e.getMessage());
+        }
     }
 
     @Override
@@ -78,10 +86,10 @@ public class AuthorDAOImpl implements AuthorDAO {
             preparedStatement.setInt(1, id);
             int rowAffected = preparedStatement.executeUpdate();
             if(rowAffected>0) {
-                System.out.println("Deleted");
+                System.out.println("Deleted query is successfully");
             }
             else{
-                System.out.println("not deleted");
+                System.out.println("Do not delete");
             }
         } catch (SQLException e) {
             System.out.println("Do not delete student: " + e.getMessage());
