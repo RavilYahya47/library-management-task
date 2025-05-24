@@ -40,6 +40,9 @@ public class BookDAOImpl implements BookDAO {
 
     @Override
     public Optional<Book> findById(int id) throws SQLException {
+        String query = "SELECT id=? FROM books";
+
+
         return Optional.empty();
     }
 

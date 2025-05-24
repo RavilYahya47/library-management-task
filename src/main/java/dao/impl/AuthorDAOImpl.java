@@ -11,10 +11,25 @@ import java.util.Optional;
 public class AuthorDAOImpl implements AuthorDAO {
 
     @Override
-    public List<Author> findAll() throws SQLException {
+    public List<Author> findAll() {
         List<Author> authors = new ArrayList<>();
-        PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM author");
-        ResultSet resultSet = preparedStatement.executeQuery();
+        String query = "SELECT * FROM author";
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = DatabaseConnection.getConnection().prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                String name = resultSet.getString(2);
+                int birth_year = resultSet.getInt(3);
+                String nationality = resultSet.getString(4);
+                Author author = new Author(id,name,birth_year,nationality);
+                authors.add(author);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
         return authors;
     }
 
