@@ -20,10 +20,24 @@ public class AuthorDAOImpl implements AuthorDAO {
 
     @Override
     public Optional<Author> findById(int id) throws SQLException {
-        PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM author WHERE id = ?");
-        preparedStatement.setInt(1, id);
-        ResultSet resultSet = preparedStatement.executeQuery();
-
+        ResultSet resultSet;
+        try (PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM author WHERE id = ?")) {
+            preparedStatement.setInt(1, id);
+            resultSet = preparedStatement.executeQuery();
+            Optional<Author> optionalAuthor = null;
+            while (resultSet.next()) {
+                int ID = resultSet.getInt(1);
+                String name = resultSet.getString(2);
+                int birth_year = resultSet.getInt(3);
+                String nationality = resultSet.getString(4);
+                Author author = new Author(ID, name, birth_year, nationality);
+                optionalAuthor = Optional.of(author);
+            }
+            return optionalAuthor;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     @Override
