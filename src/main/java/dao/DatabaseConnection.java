@@ -18,9 +18,6 @@ public class DatabaseConnection {
     }
 
     public static Connection getConnection() throws SQLException {
-        Connection con = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        System.out.println("Connection Established successfully");
-
-        return con;
+        return DriverManager.getConnection(URL, USERNAME, PASSWORD);
     }
 }
