@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 
 public class AuthorService {
     private static AuthorService service;
-    private AuthorDAO dao;
+    private final AuthorDAO dao;
 
     public static AuthorService of(AuthorDAO dao) {
         if (service == null) {
@@ -32,8 +32,5 @@ public class AuthorService {
         else {
             System.out.println("No authors found");
         }
-    };
-
-    public void getAuthors() {
     }
 }
