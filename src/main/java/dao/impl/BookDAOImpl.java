@@ -33,8 +33,9 @@ public class BookDAOImpl implements BookDAO {
         String query = "SELECT * FROM task.books WHERE id = ?";
         try(Connection connection = DatabaseConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(query)){
+
             statement.setInt(1, id);
-            ResultSet rs = statement.executeQuery(query);
+            ResultSet rs = statement.executeQuery();
             if(rs.next()){
                 return Optional.of(new Book(rs.getInt(1), rs.getString(2),
                         rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getInt(6), rs.getBoolean(7)));
@@ -91,6 +92,7 @@ public class BookDAOImpl implements BookDAO {
             statement.setString(4, book.getGenre());
             statement.setInt(5, book.getPages());
             statement.setBoolean(6, book.isAvailable());
+            statement.setInt(7, book.getId());
 
 
             int updated = statement.executeUpdate();

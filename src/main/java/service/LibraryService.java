@@ -60,6 +60,7 @@ public class LibraryService {
 
     public void borrowBook(int bookId) throws SQLException {
         Optional<Book> book = bookDAO.findById(bookId);
+        System.out.println("ajkydkasgiduahskdefük");
         if(book.isEmpty()){
             throw new BookNotFoundException("Book by id = " + bookId + " not found!");
         } else{
@@ -68,6 +69,7 @@ public class LibraryService {
                 throw new BookNotAvailableException("Book by this id is not available!");
             }
             borrowedBook.setAvailable(false);
+            System.out.println("ajkydkasgiduahskdefük");
             bookDAO.update(borrowedBook);
             System.out.println("Book borrowed successfully!");
         }
