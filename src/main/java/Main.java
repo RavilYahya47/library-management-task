@@ -1,8 +1,7 @@
 package main.java;
 
-import main.java.dao.DatabaseConnection;
-import main.java.dao.impl.AuthorDAOImpl;
-import main.java.dao.impl.BookDAOImpl;
+import main.java.dao.AuthorDAOImpl;
+import main.java.dao.BookDAOImpl;
 import main.java.model.Book;
 import main.java.service.LibraryService;
 

@@ -1,6 +1,5 @@
-package main.java.dao.impl;
+package main.java.dao;
 
-import main.java.dao.BookDAO;
 import main.java.exception.BookNotFoundException;
 import main.java.model.Book;
 

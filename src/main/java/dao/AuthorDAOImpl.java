@@ -1,6 +1,5 @@
-package main.java.dao.impl;
+package main.java.dao;
 
-import main.java.dao.AuthorDAO;
 import main.java.exception.AuthorNotFoundException;
 import main.java.model.Author;
 
