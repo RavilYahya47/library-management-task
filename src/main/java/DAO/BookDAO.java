@@ -16,4 +16,10 @@ public interface BookDAO {
     void update(Book book) throws SQLException;
 
     void deleteById(int id) throws SQLException;
+
+    List<Book> findByAuthorName(String authorName) throws SQLException;
+
+    List<Book> findAvailableBooks() throws SQLException;
+
+    List<Book> findByGenre(String genre) throws SQLException;
 }
