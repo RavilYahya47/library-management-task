@@ -1,5 +1,6 @@
 package java.service;
 
+import javax.xml.crypto.Data;
 import java.dao.AuthorDAO;
 import java.dao.BookDAO;
 import java.dao.DatabaseConnection;
@@ -11,6 +12,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class LibraryService {
     private AuthorDAO authorDAO;
@@ -24,9 +26,31 @@ public class LibraryService {
     // Constructor dependency injection
 
     // Business logic methodları:
-    public List<Book> findBooksByAuthor(String authorName) throws SQLException {
+    public List<Book> findBooksByAuthor(String authorName) {
         List<Book> books = new java.util.ArrayList<>();
-
+        String query = "SELECT b.* FROM books b  " +
+                "JOIN authors a ON b.author_id = a.id" + "WHERE a.name ILIKE ?";
+        try (PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(query))
+        {
+            preparedStatement.setString(1, authorName);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                int authorId = resultSet.getInt("author_id");
+                int publicatinYear = resultSet.getInt("publication_year");
+                String genre = resultSet.getString("genre");
+                int pages = resultSet.getInt("pages");
+                Boolean isAvailable = resultSet.getBoolean("is_available");
+                Timestamp ts = resultSet.getTimestamp("created_at");
+                LocalDateTime ldt = ts.toLocalDateTime();
+                books.add(new Book(id,title,authorId,publicatinYear,genre,pages,isAvailable,ldt));
+                return books;
+            }
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         return books;
 
