@@ -35,10 +35,10 @@ public class LibraryService {
         List<Book> books = new ArrayList<>();
 
         // Getting author's id at the given author's name
-        String getAuthorId = "SELECT id FROM task.authors WHERE name = ?";
+        String getAuthorId = "SELECT id FROM authors WHERE name = ?";
 
         // Selecting books at the getting author's id
-        String getBooksByAuthorId = "SELECT * FROM task.books WHERE author_id = ?";
+        String getBooksByAuthorId = "SELECT * FROM books WHERE author_id = ?";
 
         try (var stmt1 = connection.prepareStatement(getAuthorId);
              var stmt2 = connection.prepareStatement(getBooksByAuthorId)) {
@@ -108,10 +108,10 @@ public class LibraryService {
 
         if (isFound) {
             // Getting is_available column value at the given book id
-            String isAvailableQuery = "SELECT is_available FROM task.books WHERE id = ?";
+            String isAvailableQuery = "SELECT is_available FROM books WHERE id = ?";
 
             // Updating database is_available column value at the given book id
-            String query = "UPDATE task.books SET is_available = false WHERE id = ?";
+            String query = "UPDATE books SET is_available = false WHERE id = ?";
 
             try (var stmt1 = connection.prepareStatement(query);
                  var stmt2 = connection.prepareStatement(isAvailableQuery)) {
@@ -154,7 +154,7 @@ public class LibraryService {
 
         if (isFound) {
             // Updating is_available column value at the given id
-            String query = "UPDATE task.books SET is_available = true WHERE id = ?";
+            String query = "UPDATE books SET is_available = true WHERE id = ?";
 
             try (var stmt = connection.prepareStatement(query)) {
                 stmt.setInt(1, bookId);
