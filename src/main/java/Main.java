@@ -2,8 +2,11 @@ package main.java;
 
 import main.java.dao.impl.AuthorDaoImpl;
 import main.java.dao.impl.BookDaoImpl;
+import main.java.model.Book;
 import main.java.service.LibraryService;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Main {
@@ -50,13 +53,27 @@ public class Main {
                         System.out.println("Kitab qaytarildi.");
                         break;
                     case 6:
-                        var stats = service.getBookStatistics();
+                        Map<String, Long> stats = service.getBookStatisticsByGenre();
                         stats.forEach((genre, count) -> System.out.println(genre + ": " + count));
+                        break;
+                    case 7:
+                        Optional<Book> longestBook = service.findLongestBook();
+
+                        if (longestBook.isPresent()) {
+                            System.out.println("Ən qalın kitab: " + longestBook.get());
+                        } else {
+                            System.out.println("Kitab tapılmadı.");
+                        }
+                        break;
+                    case 8:
+                        System.out.print("İl daxil edin: ");
+                        int year = scanner.nextInt();
+                        service.findBooksPublishedAfter(year).forEach(System.out::println);
                         break;
                     case 0:
                         System.exit(0);
                     default:
-                        System.out.println("Yanlış seçim!");
+                        System.out.println("Yanlis secim!");
                 }
             } catch (Exception e) {
                 System.out.println("Xeta: " + e.getMessage());
