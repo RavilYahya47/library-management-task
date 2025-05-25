@@ -80,8 +80,18 @@ public class LibraryService {
         }
         return books;
     }
-    public void borrowBook(int bookId) throws SQLException{
-
+    public void borrowBook(int bookId) {
+        String query = "UPDATE books SET is_available = false WHERE id = ? AND is_available = true";
+        try (PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(query)) {
+            preparedStatement.setInt(1, bookId);
+            int rowAffacted = preparedStatement.executeUpdate();
+            if (rowAffacted == 0) {
+                System.out.println("This book is available");
+            } else System.out.println("The book has been successfully borrowed.");
+        }
+        catch (SQLException e) {
+            System.out.println("There is a connection problem : " + e.getMessage());
+        }
     }
 
     public void returnBook(int bookId) {
