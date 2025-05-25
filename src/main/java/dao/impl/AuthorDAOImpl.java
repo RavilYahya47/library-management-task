@@ -16,9 +16,7 @@ public class AuthorDAOImpl implements AuthorDAO {
         List<Author> authors = new ArrayList<>();
         String sql = "SELECT * FROM authors";
 
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
+        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql); ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
                 authors.add(mapResultSetToAuthor(resultSet));
@@ -31,8 +29,7 @@ public class AuthorDAOImpl implements AuthorDAO {
     public Optional<Author> findById(int id) throws SQLException {
         String sql = "SELECT * FROM authors WHERE id = ?";
 
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setInt(1, id);
 
@@ -49,8 +46,7 @@ public class AuthorDAOImpl implements AuthorDAO {
     public Author save(Author author) throws SQLException {
         String sql = "INSERT INTO authors (name, birthYear, nationality) VALUES (?, ?, ?)";
 
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, author.getName());
             preparedStatement.setInt(2, author.getBirthYear());
@@ -70,8 +66,7 @@ public class AuthorDAOImpl implements AuthorDAO {
     public void update(Author author) throws SQLException {
         String sql = "UPDATE authors SET name = ?, birthYear = ?, nationality = ? WHERE id = ?";
 
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(1, author.getName());
             preparedStatement.setInt(2, author.getBirthYear());
@@ -86,8 +81,7 @@ public class AuthorDAOImpl implements AuthorDAO {
     public void deleteById(int id) throws SQLException {
         String sql = "DELETE FROM authors WHERE id = ?";
 
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
