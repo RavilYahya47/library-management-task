@@ -22,6 +22,8 @@ public class Main {
             System.out.println("4. Kitab icarəyə ver");
             System.out.println("5. Kitabı qaytar");
             System.out.println("6. Janr üzrə statistika");
+            System.out.println("7. Ən çox səhifəli kitab");
+            System.out.println("8. Müəyyən ildən sonra çap olunan kitablar");
             System.out.println("0. Çıxış");
             System.out.print("Seçiminizi daxil edin: ");
             int secim = scanner.nextInt();

@@ -119,7 +119,7 @@ public class AuthorDaoImpl implements AuthorDao {
             author.setName(rs.getString("name"));
             return Optional.of(author);
         } catch (SQLException e) {
-            System.err.println("ResultSet'dən Author mapping zamanı xeta: " + e.getMessage());
+            System.err.println("Xeta: " + e.getMessage());
             return Optional.empty();
         }
     }

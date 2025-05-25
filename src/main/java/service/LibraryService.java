@@ -2,15 +2,13 @@ package main.java.service;
 
 import main.java.dao.AuthorDao;
 import main.java.dao.BookDao;
-import main.java.exception.BookNotAvailableException;
-import main.java.exception.BookNotFoundException;
+import main.java.exception.*;
 import main.java.model.Author;
 import main.java.model.Book;
 
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class LibraryService {
     private final AuthorDao authorDAO;
@@ -21,17 +19,16 @@ public class LibraryService {
         this.bookDAO = bookDAO;
     }
 
-    // Butun kitablari gormek
+    // Butun kitablari gostermek
     public List<Book> findAll() {
         try {
             return bookDAO.findAll();
         } catch (SQLException e) {
-            System.err.println("findAll xetasi: " + e.getMessage());
-            return Collections.emptyList();
+            throw new DBConnectionException("Data bazaya qosularken xeta bas verdi");
         }
     }
 
-    // Verilmis muellif adina gore kitablari tapmaq
+    // Verilmiş müəllif adına görə kitabları tap
     public List<Book> findBooksByAuthor(String authorName) {
         try {
             List<Author> allAuthors = authorDAO.findAll();
@@ -46,11 +43,13 @@ public class LibraryService {
                 return bookDAO.findAll().stream()
                         .filter(book -> book.getAuthorId() == authorId)
                         .collect(Collectors.toList());
+            } else {
+                throw new AuthorNotFoundException("Muellif tapilmadi: " + authorName);
             }
+
         } catch (SQLException e) {
-            System.err.println("findBooksByAuthor xetasi: " + e.getMessage());
+            throw new DBConnectionException("Muellife gore kitab tapilarken xeta bas verdi");
         }
-        return Collections.emptyList();
     }
 
     // Movcud kitablar
@@ -60,88 +59,75 @@ public class LibraryService {
                     .filter(Book::isAvailable)
                     .collect(Collectors.toList());
         } catch (SQLException e) {
-            System.err.println("findAvailableBooks xetasi: " + e.getMessage());
-            return Collections.emptyList();
+            throw new DBConnectionException("Movcud kitablari alarken xeta bas verdi");
         }
     }
 
-    // Kitab icareye goturulur
+    // Kitabı icareye goturmek
     public void borrowBook(int bookId) {
         try {
             Book book = bookDAO.findById(bookId)
-                    .orElseThrow(() -> new BookNotFoundException("Kitab tapılmadı"));
+                    .orElseThrow(() -> new BookNotFoundException("Kitab tapilmadi: ID = " + bookId));
 
             if (!book.isAvailable()) {
-                throw new BookNotAvailableException("Kitab mövcud deyil");
+                throw new BookNotAvailableException("Kitab movcud deyil: " + book.getTitle());
             }
 
             book.setAvailable(false);
             bookDAO.update(book);
 
         } catch (SQLException e) {
-            System.err.println("borrowBook xetasi: " + e.getMessage());
+            throw new DBConnectionException("Kitab icareye verilen zaman xeta bas verdi");
         }
     }
 
-    // Kitab geri qaytarılır
+    // Kitabi geri qaytarmaq
     public void returnBook(int bookId) {
         try {
             Book book = bookDAO.findById(bookId)
-                    .orElseThrow(() -> new BookNotFoundException("Kitab tapilmadi!"));
+                    .orElseThrow(() -> new BookNotFoundException("Kitab tapilmadi: ID = " + bookId));
 
             book.setAvailable(true);
             bookDAO.update(book);
 
         } catch (SQLException e) {
-            System.err.println("returnBook xetasi: " + e.getMessage());
+            throw new DBConnectionException("Kitab geri qaytarilarken xeta bas verdi");
         }
     }
 
-    // Janr uzre kitab sayini qaytarmaq
+    // Janr uzre kitab statistikasi
     public Map<String, Long> getBookStatisticsByGenre() {
         try {
             List<Book> allBooks = bookDAO.findAll();
 
-            Stream<Book> bookStream = allBooks.stream();
-
-            return bookStream.collect(
-                    Collectors.groupingBy(
+            return allBooks.stream()
+                    .collect(Collectors.groupingBy(
                             Book::getGenre,
                             Collectors.counting()
-                    )
-            );
+                    ));
         } catch (SQLException e) {
-            System.err.println("getBookStatisticsByGenre xetasi: " + e.getMessage());
-            return Collections.emptyMap();
+            throw new DBConnectionException("Kitab statistikasi alınarken xeta bas verdi");
         }
     }
 
-    // En uzun kitabi tapmaq
+    // En uzun kitab
     public Optional<Book> findLongestBook() {
         try {
             return bookDAO.findAll().stream()
                     .max(Comparator.comparing(Book::getPages));
         } catch (SQLException e) {
-            System.err.println("findLongestBook xetasi: " + e.getMessage());
-            return Optional.empty();
+            throw new DBConnectionException("En uzun kitab axtarilarken xeta bas verdi");
         }
     }
 
-    //Mueyyen ilden sonra cap olunan kitablar
+    // Mueyyen ilden sonra cap olunmus kitablar
     public List<Book> findBooksPublishedAfter(int year) {
-        List<Book> books = new ArrayList<>();
-
         try {
-            List<Book> allBooks = bookDAO.findAll();
-
-            books = allBooks.stream()
+            return bookDAO.findAll().stream()
                     .filter(book -> book.getPublicationYear() != null && book.getPublicationYear() > year)
                     .collect(Collectors.toList());
-
         } catch (SQLException e) {
-            System.err.println("Xəta baş verdi: " + e.getMessage());
+            throw new DBConnectionException("İline gore filtrlenmis kitablar alınarken xeta bas verdi");
         }
-        return books;
     }
-
 }
