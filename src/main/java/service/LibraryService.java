@@ -12,9 +12,7 @@ public class LibraryService {
     private AuthorDAO authorDAO;
     private BookDAO bookDAO;
 
-    // Constructor dependency injection
 
-    // Business logic methodları:
     public List<Book> findBooksByAuthor(String authorName) throws SQLException {
         return null;
     }

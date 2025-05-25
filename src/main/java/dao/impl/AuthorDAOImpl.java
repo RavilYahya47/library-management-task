@@ -29,7 +29,6 @@ public class AuthorDAOImpl implements AuthorDAO {
 
     @Override
     public Optional<Author> findById(int id) throws SQLException {
-        Author foundAuthor;
         String query = "SELECT * FROM task.authors WHERE id = ?";
         try(Connection connection = DatabaseConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement(query)){
@@ -55,7 +54,7 @@ public class AuthorDAOImpl implements AuthorDAO {
             statement.setString(3, author.getNationality());
 
             int added = statement.executeUpdate();
-            if(added > 1){
+            if(added > 0){
                 System.out.println("Author added successfully!");
                 author.setId(-1);
             } else{

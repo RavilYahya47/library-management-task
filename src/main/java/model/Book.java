@@ -15,6 +15,12 @@ public class Book {
 
     public Book(int id, String title, int authorId, Integer publicationYear, String genre, Integer pages,
                 boolean isAvailable, LocalDateTime createdAt) {
+        this(id, title, authorId, publicationYear, genre, pages, isAvailable);
+        this.createdAt = createdAt;
+    }
+
+    public Book(int id, String title, int authorId, Integer publicationYear, String genre, Integer pages,
+                boolean isAvailable) {
         this.id = id;
         this.title = title;
         this.authorId = authorId;
@@ -22,7 +28,7 @@ public class Book {
         this.genre = genre;
         this.pages = pages;
         this.isAvailable = isAvailable;
-        this.createdAt = createdAt;
+        this.createdAt = null;
     }
 
     public Book() {
