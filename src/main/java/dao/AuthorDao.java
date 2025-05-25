@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-public interface AuthorDAO {
+public interface AuthorDao {
 
     List<Author> findAll() throws SQLException;
 

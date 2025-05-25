@@ -1,11 +1,12 @@
 package main.java.dao;
 
 import main.java.model.Book;
+
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-public interface BookDAO {
+public interface BookDao {
 
     List<Book> findAll() throws SQLException;
 

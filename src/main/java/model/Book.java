@@ -4,14 +4,14 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Book {
-    private int id;
-    private String title;
-    private int authorId;
-    private Integer publicationYear;
-    private String genre;
-    private Integer pages;
-    private boolean isAvailable;
-    private LocalDateTime createdAt;
+        private int id;
+        private String title;
+        private int authorId;
+        private Integer publicationYear;
+        private String genre;
+        private Integer pages;
+        private boolean isAvailable;
+        private LocalDateTime createdAt;
 
     public Book() {
     }
@@ -75,7 +75,7 @@ public class Book {
         this.pages = pages;
     }
 
-    public boolean getIsAvailable() {
+    public boolean isAvailable() {
         return isAvailable;
     }
 

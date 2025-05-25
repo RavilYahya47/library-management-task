@@ -1,186 +1,93 @@
 package main.java.service;
 
-import main.java.dao.AuthorDAO;
-import main.java.dao.BookDAO;
-import main.java.exception.AuthorNotFoundException;
+import main.java.dao.AuthorDao;
+import main.java.dao.BookDao;
 import main.java.exception.BookNotAvailableException;
 import main.java.exception.BookNotFoundException;
+import main.java.model.Author;
 import main.java.model.Book;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class LibraryService {
-    private AuthorDAO authorDAO;
-    private BookDAO bookDAO;
-    private Connection connection;
+    private final AuthorDao authorDAO;
+    private final BookDao bookDAO;
 
-    // Constructor dependency injection
-    public LibraryService(AuthorDAO authorDAO, BookDAO bookDAO, Connection connection) {
+    public LibraryService(AuthorDao authorDAO, BookDao bookDAO) {
         this.authorDAO = authorDAO;
         this.bookDAO = bookDAO;
-        this.connection = connection;
-
     }
 
-    public List<Book> findBooksByAuthor(String authorName) {
-        List<Book> books = new ArrayList<>();
+    // Verilmis muellif adina gore kitablari tapmaq
+    public List<Book> findBooksByAuthor(String authorName) throws SQLException {
+        // Butun muellifleri getiririk
+        List<Author> allAuthors = authorDAO.findAll();
 
-        // Getting author's id at the given author's name
-        String getAuthorId = "SELECT id FROM authors WHERE name = ?";
+        // Ada gore muellif tapmaq
+        Optional<Author> foundAuthor = allAuthors.stream()
+                .filter(author -> author.getName().equalsIgnoreCase(authorName))
+                .findFirst();
 
-        // Selecting books at the getting author's id
-        String getBooksByAuthorId = "SELECT * FROM books WHERE author_id = ?";
+        // Eger muellif varsa, onun id-si ile kitablari tapiriq
+        if (foundAuthor.isPresent()) {
+            int authorId = foundAuthor.get().getId();
 
-        try (var stmt1 = connection.prepareStatement(getAuthorId);
-             var stmt2 = connection.prepareStatement(getBooksByAuthorId)) {
-
-            stmt1.setString(1, authorName);
-
-            ResultSet set1 = stmt1.executeQuery();
-
-            if (!set1.next()) {
-                throw new AuthorNotFoundException("Author not found: " + authorName);
-            } else {
-                int id = set1.getInt("id");
-
-                System.out.println(id);
-                stmt2.setInt(1, id);
-
-                ResultSet set2 = stmt2.executeQuery();
-                while (set2.next()) {
-                    int bookId = set2.getInt("id");
-                    String title = set2.getString("title");
-                    int authorId = set2.getInt("author_id");
-                    Integer publicationYear = set2.getInt("publication_year");
-                    String genre = set2.getString("genre");
-                    Integer pages = set2.getInt("pages");
-                    boolean isAvailable = set2.getBoolean("is_available");
-                    LocalDateTime createdAt = set2.getObject("created_at", LocalDateTime.class);
-
-                    Book book = new Book(bookId, title, authorId, publicationYear, genre, pages, isAvailable, createdAt);
-
-                    books.add(book);
-                }
-                return books;
-            }
-        } catch (AuthorNotFoundException | SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+            return bookDAO.findAll().stream()
+                    .filter(book -> book.getAuthorId() == authorId)
+                    .collect(Collectors.toList());
         }
-        return null;
+
+        // Eger muellif tapilmasa, bos siyahi qaytaririq
+        return Collections.emptyList();
     }
 
-    public List<Book> findAvailableBooks(Predicate<Book> condition) {
-        List<Book> availableBooks = new ArrayList<>();
-
-        try {
-            List<Book> books = bookDAO.findAll();
-
-            books
-                    .stream()
-                    .filter(condition)
-                    .forEach(availableBooks::add);
-        } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-        return availableBooks;
+    // Movcud kitablar
+    public List<Book> findAvailableBooks() throws SQLException {
+        return bookDAO.findAll().stream()
+                .filter(Book::isAvailable) // .filter(Book::isAvailable) də işləyər
+                .collect(Collectors.toList());
     }
 
+    // Kitab icareye goturulur
     public void borrowBook(int bookId) throws SQLException {
-        List<Book> books = bookDAO.findAll();
+        Book book = bookDAO.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException("Kitab tapılmadı"));
 
-        boolean isFound = false;
-
-        for (Book book : books) {
-            if (book.getId() == bookId) {
-                isFound = true;
-                break;
-            }
+        if (!book.isAvailable()) {
+            throw new BookNotAvailableException("Kitab mövcud deyil");
         }
 
-        if (isFound) {
-            // Getting is_available column value at the given book id
-            String isAvailableQuery = "SELECT is_available FROM books WHERE id = ?";
-
-            // Updating database is_available column value at the given book id
-            String query = "UPDATE books SET is_available = false WHERE id = ?";
-
-            try (var stmt1 = connection.prepareStatement(query);
-                 var stmt2 = connection.prepareStatement(isAvailableQuery)) {
-                stmt1.setInt(1, bookId);
-                stmt2.setInt(1, bookId);
-
-                ResultSet resultSet = stmt2.executeQuery();
-
-                resultSet.next();
-
-                boolean isAvailable = resultSet.getBoolean("is_available");
-
-                if (isAvailable) {
-                    int affectedRow = stmt1.executeUpdate();
-                    System.out.println("Affected row: " + affectedRow);
-                    System.out.println("Book borrowed...");
-                } else {
-                    throw new BookNotAvailableException("Sorry, book is already borrowed...");
-                }
-            } catch (BookNotFoundException | SQLException e) {
-                System.out.println("Error: " + e.getMessage());
-            }
-        } else {
-            System.out.println("Invalid id!");
-        }
-
+        book.setAvailable(false);
+        bookDAO.update(book);
     }
 
+    // Kitab geri qaytarılır
     public void returnBook(int bookId) throws SQLException {
-        List<Book> books = bookDAO.findAll();
+        Book book = bookDAO.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException("Kitab tapilmadi!"));
 
-        boolean isFound = false;
-
-        for (Book book : books) {
-            if (book.getId() == bookId) {
-                isFound = true;
-                break;
-            }
-        }
-
-        if (isFound) {
-            // Updating is_available column value at the given id
-            String query = "UPDATE books SET is_available = true WHERE id = ?";
-
-            try (var stmt = connection.prepareStatement(query)) {
-                stmt.setInt(1, bookId);
-
-                int affectedRow = stmt.executeUpdate();
-                System.out.println("Affected row: " + affectedRow);
-                System.out.println("Book is returned...");
-
-            } catch (BookNotFoundException | SQLException e) {
-                System.out.println("Error: " + e.getMessage());
-            }
-        } else {
-            System.out.println("Invalid id!");
-        }
-
+        book.setAvailable(true);
+        bookDAO.update(book);
     }
 
-    public Map<String, Long> getBookStatisticsByGenre() {
-        Map<String, Long> map = new HashMap<>();
-        try {
-            map = bookDAO.findAll()
-                    .stream()
-                    .collect(Collectors.groupingBy(Book::getGenre, Collectors.counting()));
-        } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-        return map;
+    // Janr uzre kitab sayini qaytarmaq
+    public Map<String, Long> getBookStatistics() throws SQLException {
+        List<Book> allBooks = bookDAO.findAll();
+
+        // Janra gore qruplasdirib sayini hesablamaq
+        Stream<Book> bookStream = allBooks.stream();
+
+        Map<String, Long> genreCount = bookStream.collect(
+                Collectors.groupingBy(
+                        Book::getGenre,
+                        Collectors.counting()
+                )
+        );
+
+        return genreCount;
+
     }
 }

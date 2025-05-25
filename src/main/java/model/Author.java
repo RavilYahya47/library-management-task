@@ -8,14 +8,15 @@ public class Author {
     private Integer birthYear;
     private String nationality;
 
-    public Author() {
-    }
-
     public Author(int id, String name, Integer birthYear, String nationality) {
         this.id = id;
         this.name = name;
         this.birthYear = birthYear;
         this.nationality = nationality;
+    }
+
+    public Author() {
+
     }
 
     public int getId() {
