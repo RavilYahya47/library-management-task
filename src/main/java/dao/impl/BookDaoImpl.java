@@ -4,10 +4,7 @@ import main.java.dao.BookDao;
 import main.java.dao.DatabaseConnection;
 import main.java.model.Book;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BookDaoImpl implements BookDao {
 
@@ -18,6 +15,18 @@ public class BookDaoImpl implements BookDao {
 
     private static final String FIND_AVAILABLE_BOOKS =
             "SELECT * FROM books WHERE is_available = true";
+
+    private static final String FIND_BY_ID = "SELECT * FROM books WHERE id = ?";
+
+    private static final String SAVE =
+            "INSERT INTO books (title, author_id, publication_year, genre, pages, is_available) " +
+                    "VALUES (?, ?, ?, ?, ?, ?)";
+
+    private static final String UPDATE =
+            "UPDATE books SET title = ?, author_id = ?, publication_year = ?, " +
+                    "genre = ?, pages = ?, is_available = ? WHERE id = ?";
+
+    private static final String DELETE_BY_ID = "DELETE FROM books WHERE id = ?";
 
     private static final String BORROW_BOOK =
             "UPDATE books SET is_available = false WHERE id = ? AND is_available = true";
@@ -80,6 +89,126 @@ public class BookDaoImpl implements BookDao {
         }
 
         return books;
+    }
+
+    @Override
+    public Optional<Book> findById(int id) throws SQLException {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(FIND_BY_ID)) {
+
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(createBookFromResultSet(rs));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error finding book by ID: " + e.getMessage());
+            throw e;
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public Book save(Book book) throws SQLException {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SAVE, Statement.RETURN_GENERATED_KEYS)) {
+
+            ps.setString(1, book.getTitle());
+            ps.setInt(2, book.getAuthorId());
+
+            if (book.getPublicationYear() != null) {
+                ps.setInt(3, book.getPublicationYear());
+            } else {
+                ps.setNull(3, Types.INTEGER);
+            }
+
+            ps.setString(4, book.getGenre());
+
+            if (book.getPages() != null) {
+                ps.setInt(5, book.getPages());
+            } else {
+                ps.setNull(5, Types.INTEGER);
+            }
+
+            ps.setBoolean(6, book.isAvailable());
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        book.setId(generatedKeys.getInt(1));
+                    }
+                }
+                System.out.println("Book saved successfully: " + book.getTitle());
+            }
+        } catch (SQLException e) {
+            System.err.println("Error saving book: " + e.getMessage());
+            throw e;
+        }
+
+        return book;
+    }
+
+
+    @Override
+    public void update(Book book) throws SQLException {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(UPDATE)) {
+
+            ps.setString(1, book.getTitle());
+            ps.setInt(2, book.getAuthorId());
+
+            if (book.getPublicationYear() != null) {
+                ps.setInt(3, book.getPublicationYear());
+            } else {
+                ps.setNull(3, Types.INTEGER);
+            }
+
+            ps.setString(4, book.getGenre());
+
+            if (book.getPages() != null) {
+                ps.setInt(5, book.getPages());
+            } else {
+                ps.setNull(5, Types.INTEGER);
+            }
+
+            ps.setBoolean(6, book.isAvailable());
+            ps.setInt(7, book.getId());
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows > 0) {
+                System.out.println("Book updated successfully: " + book.getTitle());
+            } else {
+                System.out.println("No book found with ID: " + book.getId());
+            }
+        } catch (SQLException e) {
+            System.err.println("Error updating book: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    @Override
+    public void deleteById(int id) throws SQLException {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(DELETE_BY_ID)) {
+
+            ps.setInt(1, id);
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows > 0) {
+                System.out.println("Book deleted successfully with ID: " + id);
+            } else {
+                System.out.println("No book found with ID: " + id);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error deleting book: " + e.getMessage());
+            throw e;
+        }
     }
 
     @Override

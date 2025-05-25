@@ -174,6 +174,20 @@ public class LibraryService {
                 .collect(Collectors.toList());
     }
 
+    public Book saveBook(Book book) throws SQLException {
+        if (book == null) {
+            throw new IllegalArgumentException("Book cannot be null");
+        }
+        if (book.getTitle() == null || book.getTitle().trim().isEmpty()) {
+            throw new IllegalArgumentException("Book title cannot be null or empty");
+        }
+        if (book.getAuthorId() <= 0) {
+            throw new IllegalArgumentException("Author ID must be positive");
+        }
+
+        return bookDao.save(book);
+    }
+
     public Optional<Book> findBookWithMostPages() throws SQLException {
         return findAvailableBooks().stream()
                 .filter(book -> book.getPages() != null)
