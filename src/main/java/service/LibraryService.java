@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,7 +87,19 @@ public class LibraryService {
     public void returnBook(int bookId) throws SQLException{
 
     }
-    public Map<String, Long> getBookStatisticsByGenre() throws SQLException{
-
-    }
+    public Map<String, Long> getBookStatisticsByGenre(){
+        Map<String, Long> map = new HashMap<>();
+        String query = "SELECT genre, COUNT(*) AS total FROM books GROUP BY genre";
+        try (PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(query)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                String genre = resultSet.getString("genre");
+                long total = resultSet.getLong("total");
+                map.put(genre, total);
+            }
+        } catch (SQLException e) {
+            System.out.println("There is a connection problem: " + e.getMessage());
+        }
+        return map;
+     }
 }
