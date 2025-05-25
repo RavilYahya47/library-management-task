@@ -25,7 +25,7 @@ public class BookDAOImpl implements BookDAO {
         List<Book> books = new ArrayList<>();
 
         // Getting all books from database
-        String query = "SELECT * FROM task.books";
+        String query = "SELECT * FROM books";
         try (var stmt = connection.prepareStatement(query)) {
             ResultSet allBooks = stmt.executeQuery();
 
@@ -71,7 +71,7 @@ public class BookDAOImpl implements BookDAO {
     public Book save(Book book) throws SQLException {
 
         // Adding new book to database
-        String query = "INSERT INTO task.books (title, author_id, publication_year, genre, pages, is_available) VALUES(?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO books (title, author_id, publication_year, genre, pages, is_available) VALUES(?, ?, ?, ?, ?, ?)";
 
         try (var stmt = connection.prepareStatement(query)) {
             stmt.setString(1, book.getTitle());
@@ -107,7 +107,7 @@ public class BookDAOImpl implements BookDAO {
     public void update(Book book) throws SQLException {
 
         // Updating a book from database
-        String query = "UPDATE task.books SET title = ?, author_id = ?, publication_year = ?, genre = ?, pages = ?, is_available = ? WHERE id = ?";
+        String query = "UPDATE books SET title = ?, author_id = ?, publication_year = ?, genre = ?, pages = ?, is_available = ? WHERE id = ?";
 
         try (var stmt = connection.prepareStatement(query)) {
             stmt.setString(1, book.getTitle());
@@ -127,7 +127,7 @@ public class BookDAOImpl implements BookDAO {
     @Override
     public void deleteById(int id) throws SQLException {
         // Deleting book at the given id from database
-        String query = "DELETE from task.books WHERE id = ?";
+        String query = "DELETE from books WHERE id = ?";
 
         try (var stmt = connection.prepareStatement(query)) {
 

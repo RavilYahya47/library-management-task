@@ -25,7 +25,7 @@ public class AuthorDAOImpl implements AuthorDAO {
         List<Author> authors = new ArrayList<>();
 
         // Getting all authors from database
-        String query = "SELECT * FROM task.authors";
+        String query = "SELECT * FROM authors";
         try (var stmt = connection.prepareStatement(query)) {
             ResultSet allAuthors = stmt.executeQuery();
 
@@ -67,7 +67,7 @@ public class AuthorDAOImpl implements AuthorDAO {
     public Author save(Author author) {
 
         // Adding new author to database
-        String query = "INSERT INTO task.authors (name, birth_year, nationality) VALUES (?, ?, ?)";
+        String query = "INSERT INTO authors (name, birth_year, nationality) VALUES (?, ?, ?)";
 
         try (var stmt = connection.prepareStatement(query)) {
             stmt.setString(1, author.getName());
@@ -97,7 +97,7 @@ public class AuthorDAOImpl implements AuthorDAO {
     public void update(Author author) {
 
         // Updating an author from database
-        String query = "UPDATE task.authors SET name = ?, birth_year = ?, nationality = ? WHERE id = ?";
+        String query = "UPDATE authors SET name = ?, birth_year = ?, nationality = ? WHERE id = ?";
 
         try (var stmt = connection.prepareStatement(query)) {
             stmt.setString(1, author.getName());
@@ -115,7 +115,7 @@ public class AuthorDAOImpl implements AuthorDAO {
     public void deleteById(int id) {
 
         // Deleting author at the given id from database
-        String query = "DELETE from task.authors WHERE id = ?";
+        String query = "DELETE from authors WHERE id = ?";
 
         try (var stmt = connection.prepareStatement(query)) {
 
