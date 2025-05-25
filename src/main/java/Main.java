@@ -17,7 +17,7 @@ public class Main {
             System.out.println("2. Müəllifə görə kitab axtar");
             System.out.println("3. Mövcud kitabları göstər");
             System.out.println("4. Kitab icarəyə ver");
-            System.out.println("5. Kitabı qaytart");
+            System.out.println("5. Kitabı qaytar");
             System.out.println("6. Janr üzrə statistika");
             System.out.println("0. Çıxış");
             System.out.print("Seçiminizi daxil edin: ");
@@ -27,26 +27,32 @@ public class Main {
             try {
                 switch (secim) {
                     case 1:
-                        service.findAvailableBooks().forEach(System.out::println);
+                        service.findAll().forEach(System.out::println);
+                        break;
                     case 2:
                         System.out.print("Muellif adi: ");
                         String name = scanner.nextLine();
                         service.findBooksByAuthor(name).forEach(System.out::println);
+                        break;
                     case 3:
                         service.findAvailableBooks().forEach(System.out::println);
+                        break;
                     case 4:
                         System.out.print("Kitab ID: ");
                         int id1 = scanner.nextInt();
                         service.borrowBook(id1);
                         System.out.println("Kitab icareye verildi.");
+                        break;
                     case 5:
                         System.out.print("Kitab ID: ");
                         int id2 = scanner.nextInt();
                         service.returnBook(id2);
                         System.out.println("Kitab qaytarildi.");
+                        break;
                     case 6:
                         var stats = service.getBookStatistics();
                         stats.forEach((genre, count) -> System.out.println(genre + ": " + count));
+                        break;
                     case 0:
                         System.exit(0);
                     default:

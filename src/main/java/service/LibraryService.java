@@ -21,6 +21,11 @@ public class LibraryService {
         this.bookDAO = bookDAO;
     }
 
+    //Butun kitablari gormek
+    public List<Book> findAll() throws SQLException {
+        return bookDAO.findAll();
+    }
+
     // Verilmis muellif adina gore kitablari tapmaq
     public List<Book> findBooksByAuthor(String authorName) throws SQLException {
         // Butun muellifleri getiririk
