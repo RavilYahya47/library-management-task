@@ -11,6 +11,12 @@ import java.util.Optional;
 
 public class BookDAOImpl implements BookDAO {
 
+    //PreparedStatement istifadə edin
+    //ResultSet-dən Author obyektləri yaradın
+    //Exception handling əlavə edin
+    //Connection-ları düzgün bağlayın
+
+
     @Override
     public List<Book> findAll() throws SQLException {
         List<Book> books = new ArrayList<>();

@@ -8,6 +8,8 @@ public class Author {
     private Integer birthYear;
     private String nationality;
 
+    // Constructors (default və parametrli)
+
     public Author() {
     }
 
@@ -17,6 +19,8 @@ public class Author {
         this.birthYear = birthYear;
         this.nationality = nationality;
     }
+
+    // Getter və Setter methodları
 
     public int getId() {
         return id;
@@ -50,6 +54,8 @@ public class Author {
         this.nationality = nationality;
     }
 
+    // toString() methodu
+
     @Override
     public String toString() {
         return "Author{" +
@@ -59,6 +65,8 @@ public class Author {
                 ", nationality='" + nationality + '\'' +
                 '}';
     }
+
+    // equals() və hashCode() methodları
 
     @Override
     public boolean equals(Object o) {

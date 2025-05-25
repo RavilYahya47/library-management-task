@@ -11,6 +11,12 @@ import java.util.Optional;
 
 public class AuthorDAOImpl implements AuthorDAO {
 
+    //PreparedStatement istifadə edin
+    //ResultSet-dən Author obyektləri yaradın
+    //Exception handling əlavə edin
+    //Connection-ları düzgün bağlayın
+
+
     @Override
     public List<Author> findAll() throws SQLException {
         List<Author> authors = new ArrayList<>();

@@ -13,6 +13,7 @@ public class Book {
     private boolean isAvailable;
     private LocalDateTime createdAt;
 
+    // Constructors (default və parametrli)
 
     public Book() {
     }
@@ -27,6 +28,8 @@ public class Book {
         this.isAvailable = isAvailable;
         this.createdAt = createdAt;
     }
+
+    // Getter və Setter methodları
 
     public int getId() {
         return id;
@@ -92,6 +95,8 @@ public class Book {
         this.createdAt = createdAt;
     }
 
+    // toString() methodu
+
     @Override
     public String toString() {
         return "Book{" +
@@ -105,6 +110,8 @@ public class Book {
                 ", createdAt=" + createdAt +
                 '}';
     }
+
+    // equals() və hashCode() methodları
 
     @Override
     public boolean equals(Object o) {
