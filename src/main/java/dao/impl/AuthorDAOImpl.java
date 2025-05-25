@@ -2,6 +2,7 @@ package main.java.dao.impl;
 
 import main.java.dao.AuthorDAO;
 import main.java.dao.DatabaseConnection;
+import main.java.exceptions.AuthorNotFoundException;
 import main.java.model.Author;
 
 import java.sql.*;
@@ -82,7 +83,7 @@ public class AuthorDAOImpl implements AuthorDAO {
             if(updated == 1){
                 System.out.println("Updated successfully!");
             } else{
-                System.out.println("No author by this id!");
+                throw new AuthorNotFoundException("Author by id = " + author.getId() + " not found!");
             }
         }
 }
@@ -97,7 +98,7 @@ public class AuthorDAOImpl implements AuthorDAO {
             if(deleted == 1){
                 System.out.println("Deleted successfully!");
             } else{
-                System.out.println("No author by this id!");
+                throw new AuthorNotFoundException("Author by id = " + id + " not found!");
             }
         }
     }

@@ -4,6 +4,8 @@ import main.java.dao.AuthorDAO;
 import main.java.dao.BookDAO;
 import main.java.dao.impl.AuthorDAOImpl;
 import main.java.dao.impl.BookDAOImpl;
+import main.java.exceptions.BookNotAvailableException;
+import main.java.exceptions.BookNotFoundException;
 import main.java.model.Book;
 
 import java.sql.SQLException;
@@ -59,12 +61,11 @@ public class LibraryService {
     public void borrowBook(int bookId) throws SQLException {
         Optional<Book> book = bookDAO.findById(bookId);
         if(book.isEmpty()){
-            System.out.println("Book not found!");
+            throw new BookNotFoundException("Book by id = " + bookId + " not found!");
         } else{
             Book borrowedBook = book.get();
             if(!borrowedBook.isAvailable()){
-                System.out.println("Book not available!");
-                return;
+                throw new BookNotAvailableException("Book by this id is not available!");
             }
             borrowedBook.setAvailable(false);
             bookDAO.update(borrowedBook);
@@ -75,7 +76,7 @@ public class LibraryService {
     public void returnBook(int bookId) throws SQLException {
         Optional<Book> book = bookDAO.findById(bookId);
         if (book.isEmpty()) {
-            System.out.println("Book not found.");
+            throw new BookNotFoundException("Book by id = " + bookId + " not found!");
         } else {
             Book returnedBook = book.get();
             if (!returnedBook.isAvailable()) {

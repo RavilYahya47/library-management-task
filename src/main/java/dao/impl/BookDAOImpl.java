@@ -2,6 +2,7 @@ package main.java.dao.impl;
 
 import main.java.dao.BookDAO;
 import main.java.dao.DatabaseConnection;
+import main.java.exceptions.BookNotFoundException;
 import main.java.model.Book;
 
 import java.sql.*;
@@ -96,7 +97,7 @@ public class BookDAOImpl implements BookDAO {
             if (updated == 1) {
                 System.out.println("Updated successfully!");
             } else {
-                System.out.println("No book by this id!");
+                throw new BookNotFoundException("Book by id = " + book.getId() + " not found!");
             }
         }
     }
@@ -111,7 +112,7 @@ public class BookDAOImpl implements BookDAO {
             if(deleted == 1){
                 System.out.println("Deleted successfully!");
             } else{
-                System.out.println("No book by this id!");
+                throw new BookNotFoundException("Book by id = " + id + " not found!");
             }
         }
     }

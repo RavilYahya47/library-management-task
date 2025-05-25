@@ -1,5 +1,6 @@
 package main.java;
 
+import main.java.exceptions.BookNotAvailableException;
 import main.java.model.Book;
 import main.java.service.LibraryService;
 
@@ -48,7 +49,7 @@ public class Main {
                 case 3 -> {
                     List<Book> availableBooks = libraryService.findAvailableBooks();
                     if(availableBooks.isEmpty()){
-                        System.out.println("Not any available book!");
+                        throw new BookNotAvailableException("No available book!");
                     } else{
                         System.out.println("Available books:");
                         availableBooks.forEach(System.out::println);
