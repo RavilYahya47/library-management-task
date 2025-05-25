@@ -45,6 +45,7 @@ public class Main {
                     for (Book book: availableBooks) {
                         System.out.print(book + ", ");
                     }
+                    break;
                 }
                 case 4:
                     System.out.print("choose you book id: ");
@@ -54,6 +55,7 @@ public class Main {
                 case 5:
                     System.out.print("Enter your book id which you like: ");
                     int bookName = scanner.nextInt();
+                    scanner.nextLine();
                     libraryService.returnBook(bookName);
                     break;
                 case 6:{
