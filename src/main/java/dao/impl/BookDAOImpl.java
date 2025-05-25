@@ -109,12 +109,12 @@ public class BookDAOImpl implements BookDAO {
         Book book = new Book();
         book.setId(resultSet.getInt("id"));
         book.setTitle(resultSet.getString("title"));
-        book.setAuthorId(resultSet.getInt("authorId"));
-        book.setPublicationYear(resultSet.getInt("publicationYear"));
+        book.setAuthorId(resultSet.getInt("author_Id"));
+        book.setPublicationYear(resultSet.getInt("publication_Year"));
         book.setGenre(resultSet.getString("genre"));
         book.setPages(resultSet.getInt("pages"));
-        book.setAvailable(resultSet.getBoolean("isAvailable"));
-        book.setCreatedAt(resultSet.getTimestamp("createdAt").toLocalDateTime());
+        book.setAvailable(resultSet.getBoolean("is_Available"));
+        book.setCreatedAt(resultSet.getTimestamp("created_At").toLocalDateTime());
         return book;
     }
 }

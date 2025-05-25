@@ -30,3 +30,5 @@ INSERT INTO books (title, author_id, publication_year, genre, pages) VALUES
                                                                          ('Leyli və Məcnun', 2, 1536, 'Romantik', 300),
                                                                          ('Yüz İllik Tənhalıq', 3, 1967, 'Maqik Realizm', 417),
                                                                          ('Harry Potter və Fəlsəfə Daşı', 4, 1997, 'Fantasy', 223);
+
+SELECT * FROM authors

@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
         Scanner scanner = new Scanner(System.in);
 
@@ -75,5 +75,6 @@ public class Main {
         } while (choice != 0);
 
         scanner.close();
+
     }
 }

@@ -98,7 +98,7 @@ public class AuthorDAOImpl implements AuthorDAO {
         Author author = new Author();
         author.setId(resultSet.getInt("id"));
         author.setName(resultSet.getString("name"));
-        author.setBirthYear(resultSet.getInt("birthYear"));
+        author.setBirthYear(resultSet.getInt("birth_Year"));
         author.setNationality(resultSet.getString("nationality"));
         return author;
     }
