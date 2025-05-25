@@ -18,4 +18,6 @@ public interface LibraryService {
 
     Map<String, Long> getBookStatisticsByGenre() throws SQLException;
 
+    List<Book> findBooksByYearRange(int startYear, int endYear) throws SQLException;
+
 }

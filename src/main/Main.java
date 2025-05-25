@@ -31,6 +31,7 @@ public class Main {
             System.out.println("4. Kitabı icarəyə ver");
             System.out.println("5. Kitabı qaytar");
             System.out.println("6. Janr üzrə statistika");
+            System.out.println("7. Ilə görə kitabları filtirləyib göstər");
             System.out.println("0. Çıxış");
             System.out.print("Seçiminizi daxil edin: ");
 
@@ -64,6 +65,18 @@ public class Main {
                     case 6 -> {
                         Map<String, Long> stats = libraryService.getBookStatisticsByGenre();
                         stats.forEach((genre, count) -> System.out.println(genre + ": " + count));
+                    }
+                    case 7 -> {
+                        System.out.print("Başlanğıc ili daxil edin: ");
+                        int startYear = scanner.nextInt();
+                        System.out.print("Son ili daxil edin: ");
+                        int endYear = scanner.nextInt();
+                        List<Book> books = libraryService.findBooksByYearRange(startYear, endYear);
+                        if (books.isEmpty()) {
+                            System.out.println("Bu aralıqda kitab tapılmadı.");
+                        } else {
+                            books.forEach(System.out::println);
+                        }
                     }
                     case 0 -> System.out.println("Çıxılır...");
                     default -> System.out.println("Yanlış seçim! Yenidən cəhd edin.");

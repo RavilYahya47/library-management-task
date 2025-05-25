@@ -72,6 +72,20 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    public List<Book> findBooksByYearRange(int startYear, int endYear) throws SQLException {
+        List<Book> allBooks = bookDAO.findAll();
+        List<Book> filtered = new ArrayList<>();
+        for (Book book : allBooks) {
+            int year = book.getPublicationYear();
+            if (year >= startYear && year <= endYear) {
+                filtered.add(book);
+            }
+        }
+        return filtered;
+    }
+
+
+    @Override
     public Map<String, Long> getBookStatisticsByGenre() throws SQLException {
         return bookDAO.findAll().stream().collect(Collectors.groupingBy(Book::getGenre, Collectors.counting()));
     }
