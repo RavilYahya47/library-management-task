@@ -30,11 +30,7 @@ public class AuthorDAOImpl implements AuthorDAO {
         ResultSet rs = stmt.executeQuery("select * from authors");
         List<Author> authors = new ArrayList<>();
         while (rs.next()) {
-            Author author = new Author();
-            author.setId(rs.getInt("id"));
-            author.setName(rs.getString("name"));
-            author.setBirthYear(rs.getInt("birth_year"));
-            author.setNationality(rs.getString("nationality"));
+            Author author = getAuthorFromResultSet(rs);
             authors.add(author);
         }
         return authors;

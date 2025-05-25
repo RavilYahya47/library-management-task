@@ -3,7 +3,7 @@ package main.java.model;
 import java.time.LocalDateTime;
 
 public class Book {
-    private int id;
+    private Integer id;
     private String title;
     private int authorId;
     private Integer publicationYear;
@@ -11,6 +11,8 @@ public class Book {
     private Integer pages;
     private boolean isAvailable;
     private LocalDateTime createdAt;
+
+    public Book() {}
 
     public Book(int id, String title, int authorId, Integer publicationYear, String genre, Integer pages, boolean isAvailable) {
         this.id = id;
@@ -22,7 +24,7 @@ public class Book {
         this.isAvailable = isAvailable;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
