@@ -1,10 +1,10 @@
 package main.java.dao;
 
-import main.java.model.Author;
 import main.java.model.Book;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -58,9 +58,9 @@ public class BookDAOImpl implements BookDAO {
         book.setPublicationYear(rs.getInt("publication_year"));
         book.setGenre(rs.getString("genre"));
         book.setPages(rs.getInt("pages"));
-        book.setAvailable(rs.getBoolean("available"));
+        book.setAvailable(rs.getBoolean("is_available"));
         String createdAt = rs.getString("created_at");
-        LocalDateTime created = LocalDateTime.parse(createdAt);
+        LocalDateTime created = LocalDateTime.parse(createdAt, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
         book.setCreatedAt(created);
 
         return book;
@@ -86,7 +86,7 @@ public class BookDAOImpl implements BookDAO {
                 book.setId(generatedKeys.getInt(1));
             }
             else {
-                throw new SQLException("Creating author failed, no ID obtained.");
+                throw new SQLException("Creating book failed, no ID obtained.");
             }
         }
 
@@ -99,12 +99,14 @@ public class BookDAOImpl implements BookDAO {
             throw new SQLException("Book id is null");
         }
 
-        PreparedStatement stmt = connection.prepareStatement("update books(title, author_id, publication_year, genre, pages) set values(?,?,?,?,?) where id = ?");
+        PreparedStatement stmt = connection.prepareStatement("UPDATE books SET title = ?, author_id = ?, publication_year = ?, genre = ?, pages = ?, is_available =? WHERE id = ?;\n");
         stmt.setString(1, book.getTitle());
         stmt.setInt(2, book.getAuthorId());
         stmt.setInt(3, book.getPublicationYear());
         stmt.setString(4, book.getGenre());
         stmt.setInt(5, book.getPages());
+        stmt.setBoolean(6, book.isAvailable());
+        stmt.setInt(7, book.getId());
 
         int affectedRows = stmt.executeUpdate();
 

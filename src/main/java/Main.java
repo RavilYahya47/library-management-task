@@ -7,9 +7,10 @@ import main.java.model.Book;
 import main.java.service.AuthorService;
 import main.java.service.BookService;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Main {
@@ -17,18 +18,18 @@ public class Main {
     private static BookService books;
 
     public static void main(String[] args) {
-
         try {
             Connection con = DatabaseConnection.getConnection();
             authors = AuthorService.of(AuthorDAOImpl.of(con));
             books = BookService.of(BookDAOImpl.of(con));
 
+            showMenu();
+
             while (true){
-                showMenu();
                 Scanner sc = new Scanner(System.in);
                 int command = sc.nextInt();
                 String arg = sc.nextLine();
-
+                showMenu();
                 dispatch(command, arg);
             }
 
@@ -51,6 +52,7 @@ public class Main {
         System.out.println("0. Çıxış");
     }
 
+    //məsələn: '6 roman' kimi axtarsan romatik genre olanları göstərəcək
     private static void dispatch(int command, String arg) throws SQLException {
         switch (command) {
             case 1 -> books.filterBy(_ -> true);
