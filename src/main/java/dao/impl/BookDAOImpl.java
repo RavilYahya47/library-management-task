@@ -112,7 +112,18 @@ public class BookDAOImpl implements BookDAO {
     }
 
     @Override
-    public void deleteById(int id) throws SQLException {
-
+    public void deleteById(int id) {
+        String query = "DELETE * books WHERE id=?";
+        try (
+            PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(query)){
+            preparedStatement.setInt(1, id);
+            int result = preparedStatement.executeUpdate();
+            if (result>0) {
+                System.out.println("Delete query is completed");
+            } else
+            {System.out.println("Don't delete....");}
+        }catch (SQLException e) {
+            System.out.println("There is a problem : " + e.getMessage());
+        }
     }
 }
