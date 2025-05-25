@@ -1,6 +1,5 @@
 package java.service;
 
-import javax.xml.crypto.Data;
 import java.dao.AuthorDAO;
 import java.dao.BookDAO;
 import java.dao.DatabaseConnection;
@@ -30,7 +29,7 @@ public class LibraryService {
     public List<Book> findBooksByAuthor(String authorName) {
         List<Book> books = new java.util.ArrayList<>();
         String query = "SELECT b.* FROM books b  " +
-                "JOIN authors a ON b.author_id = a.id" + "WHERE a.name ILIKE ?";
+                "JOIN authors a ON b.author_id = a.id" + "WHERE a.name ILIKE %?%";
         try (PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(query))
         {
             preparedStatement.setString(1, authorName);
@@ -84,8 +83,22 @@ public class LibraryService {
     public void borrowBook(int bookId) throws SQLException{
 
     }
-    public void returnBook(int bookId) throws SQLException{
 
+    public void returnBook(int bookId) {
+        String query = "UPDATE books SET is_available = true WHERE id = ?";
+        try (PreparedStatement preparedStatement = DatabaseConnection.getConnection().prepareStatement(query)) {
+            preparedStatement.setInt(1, bookId);
+            int rowAffacted = preparedStatement.executeUpdate();
+
+            if (rowAffacted >0) {
+                System.out.println(bookId + " - bookId is updated");
+            } else {
+                System.out.println("Do not Update");
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("There is a connection problem : " + e.getMessage());
+        }
     }
     public Map<String, Long> getBookStatisticsByGenre(){
         Map<String, Long> map = new HashMap<>();
