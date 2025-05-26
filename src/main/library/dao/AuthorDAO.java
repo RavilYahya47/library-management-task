@@ -1,6 +1,6 @@
-package java.dao;
+package library.dao;
 
-import java.model.Author;
+import library.model.Author;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;

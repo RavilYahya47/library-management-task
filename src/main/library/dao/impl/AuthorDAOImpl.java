@@ -1,8 +1,8 @@
-package java.dao.impl;
+package library.dao.impl;
 
-import java.dao.AuthorDAO;
-import java.dao.DatabaseConnection;
-import java.model.Author;
+import library.dao.AuthorDAO;
+import library.dao.DatabaseConnection;
+import library.model.Author;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

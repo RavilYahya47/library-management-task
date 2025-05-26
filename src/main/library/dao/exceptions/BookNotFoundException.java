@@ -1,4 +1,4 @@
-package java.dao.exceptions;
+package library.dao.exceptions;
 
     public class BookNotFoundException extends Exception {
         public BookNotFoundException(String message) {

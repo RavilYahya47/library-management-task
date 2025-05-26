@@ -1,10 +1,10 @@
-package java;
+package library;
 
-import java.dao.AuthorDAO;
-import java.dao.impl.AuthorDAOImpl;
-import java.dao.impl.BookDAOImpl;
-import java.model.Book;
-import java.service.LibraryService;
+import library.dao.AuthorDAO;
+import library.dao.impl.AuthorDAOImpl;
+import library.dao.impl.BookDAOImpl;
+import library.model.Book;
+import library.service.LibraryService;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -42,13 +42,11 @@ public class Main {
                 }
                 case 3: {
                     List<Book> availableBooks = libraryService.findAvailableBooks();
-                    for (Book book: availableBooks) {
-                        System.out.print(book + ", ");
-                    }
+                    availableBooks.stream().forEach(book -> System.out.println(book + ", "));
                     break;
                 }
                 case 4:
-                    System.out.print("choose you book id: ");
+                    System.out.print("choose your book id: ");
                     int answer = scanner.nextInt();
                     libraryService.borrowBook(answer);
                     break;
@@ -60,6 +58,7 @@ public class Main {
                     break;
                 case 6:{
                     Map<String, Long> bookStatisticsByGenre = libraryService.getBookStatisticsByGenre();
+
                     for (Map.Entry<String, Long> entry : bookStatisticsByGenre.entrySet()) {
                         System.out.println("Genre : " + entry.getKey() + " ------ " + "Total: " + entry.getValue());
                     }
@@ -74,7 +73,7 @@ public class Main {
 
     public static int fromScanner() {
         Scanner scanner = new Scanner(System.in);
-        String string = "=== Kitab İdarəetmə Sistemi ===\n" +
+        String query = "=== Kitab İdarəetmə Sistemi ===\n" +
                 "        1. Bütün kitabları göstər\n" +
                 "        2. Müəllifə görə kitab axtar\n" +
                 "        3. Mövcud kitabları göstər\n" +
@@ -83,6 +82,7 @@ public class Main {
                 "        6. Janr üzrə statistika\n" +
                 "        0. Çıxış\n" +
                 "\nSeciminizi daxil edin : ";
+        System.out.println(query);
 
         return scanner.nextInt();
     }

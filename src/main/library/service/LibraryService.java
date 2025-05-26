@@ -1,9 +1,9 @@
-package java.service;
+package library.service;
 
-import java.dao.AuthorDAO;
-import java.dao.BookDAO;
-import java.dao.DatabaseConnection;
-import java.model.Book;
+import library.dao.AuthorDAO;
+import library.dao.BookDAO;
+import library.dao.DatabaseConnection;
+import library.model.Book;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import library.dao.exceptions.BookNotAvailableException;
 
 public class LibraryService {
     private AuthorDAO authorDAO;
@@ -86,7 +87,7 @@ public class LibraryService {
             preparedStatement.setInt(1, bookId);
             int rowAffacted = preparedStatement.executeUpdate();
             if (rowAffacted == 0) {
-                System.out.println("This book is available");
+                System.out.println("Book is already borrowed.");
             } else System.out.println("The book has been successfully borrowed.");
         }
         catch (SQLException e) {
