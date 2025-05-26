@@ -62,7 +62,7 @@ public class BookDAOImpl implements BookDAO {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("There is a connection problem: " + e.getMessage());
         }
 
         return Optional.empty();
@@ -86,8 +86,7 @@ public class BookDAOImpl implements BookDAO {
                 System.out.println("Do not saved");
             };
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+            System.out.println("There is a connection problem: " + e.getMessage());        }
        return null;
     }
 

@@ -3,6 +3,7 @@ package library.service;
 import library.dao.AuthorDAO;
 import library.dao.BookDAO;
 import library.dao.DatabaseConnection;
+import library.exceptions.BookNotAvailableException;
 import library.model.Book;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import library.dao.exceptions.BookNotAvailableException;
 
 public class LibraryService {
     private AuthorDAO authorDAO;
@@ -50,8 +50,7 @@ public class LibraryService {
             }
         }
         catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+            System.out.println("There is a connection problem : " + e.getMessage());        }
 
         return books;
 
@@ -87,7 +86,7 @@ public class LibraryService {
             preparedStatement.setInt(1, bookId);
             int rowAffacted = preparedStatement.executeUpdate();
             if (rowAffacted == 0) {
-                System.out.println("Book is already borrowed.");
+                throw new BookNotAvailableException("Book is already borrowed");
             } else System.out.println("The book has been successfully borrowed.");
         }
         catch (SQLException e) {
